@@ -1,15 +1,15 @@
-import { Ipod } from "@/components/Ipod";
+"use client";
+
+import dynamic from "next/dynamic";
 import { APPLE_DEVELOPER_TOKEN } from "@/utils/constants/api";
 
-export default async function Page({
-  searchParams,
-}: {
-  searchParams: Promise<Record<string, string | undefined>>;
-}) {
-  // Awaiting searchParams keeps this route dynamic (avoids static prerender that would touch `window`).
-  // P1-C will switch to `output: 'export'` and move client-only init into useEffect.
-  await searchParams;
+// Skip SSR/SSG: Ipod uses MusicKit JS which touches `window` during render.
+const Ipod = dynamic(
+  () => import("@/components/Ipod").then((m) => m.Ipod),
+  { ssr: false }
+);
 
+export default function Page() {
   const appleAccessToken = APPLE_DEVELOPER_TOKEN ?? "";
 
   return <Ipod appleAccessToken={appleAccessToken} />;

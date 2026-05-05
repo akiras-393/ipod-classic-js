@@ -29,7 +29,6 @@
   },
   "devDependencies": {
     "@next/bundle-analyzer": "^16.2.4",
-    "@serwist/turbopack": "^9.5.7",
     "@types/he": "^1.2.3",
     "@types/musickit-js": "^1.0.11",
     "@types/node": "^20.19.39",
@@ -49,7 +48,6 @@
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-unused-imports": "^4.4.1",
     "prettier": "^3.8.3",
-    "serwist": "^9.5.7",
     "typescript": "npm:@typescript/typescript6"
   },
   "browserslist": [

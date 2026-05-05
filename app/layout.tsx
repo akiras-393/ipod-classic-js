@@ -1,6 +1,5 @@
 import { getRootAppUrl } from "@/utils";
 import StyledComponentsRegistry from "@/lib/registry";
-import { SerwistProvider } from "@/lib/serwist-provider";
 import { Metadata, Viewport } from "next";
 import Script from "next/script";
 
@@ -69,9 +68,7 @@ export default function RootLayout({
         <link rel="preconnect" href="https://js-cdn.music.apple.com" crossOrigin="" />
       </head>
       <body>
-        <SerwistProvider swUrl="/serwist/sw.js" options={{ scope: "/" }}>
-          <StyledComponentsRegistry>{children}</StyledComponentsRegistry>
-        </SerwistProvider>
+        <StyledComponentsRegistry>{children}</StyledComponentsRegistry>
       </body>
       <Script
         src="https://js-cdn.music.apple.com/musickit/v3/musickit.js"

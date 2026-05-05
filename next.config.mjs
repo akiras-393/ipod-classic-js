@@ -1,4 +1,3 @@
-import { withSerwist } from "@serwist/turbopack";
 import withBundleAnalyzer from "@next/bundle-analyzer";
 
 const analyzer = withBundleAnalyzer({
@@ -8,6 +7,10 @@ const analyzer = withBundleAnalyzer({
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: false,
+  output: "export",
+  images: {
+    unoptimized: true,
+  },
   turbopack: {},
   allowedDevOrigins: ["127.0.0.1", "localhost"],
   compiler: {
@@ -15,4 +18,4 @@ const nextConfig = {
   },
 };
 
-export default withSerwist(analyzer(nextConfig));
+export default analyzer(nextConfig);
