@@ -73,6 +73,22 @@ export const MusicKitProvider = ({
     }
   });
 
+  // WKWebView 環境で window.close() が機能せず authorize popup が
+  // 閉じない場合の fallback。MusicKit が user token を取得すれば
+  // window.MusicKit.getInstance().isAuthorized が true になるので、
+  // 短い間隔で polling して state を反映する。authorized 検知後は停止。
+  useEffect(() => {
+    if (!isConfigured) return;
+    const intervalId = window.setInterval(() => {
+      const music = window.MusicKit?.getInstance();
+      if (music?.isAuthorized) {
+        setIsAppleAuthorized(true);
+        window.clearInterval(intervalId);
+      }
+    }, 1000);
+    return () => window.clearInterval(intervalId);
+  }, [isConfigured, setIsAppleAuthorized]);
+
   return (
     <MusicKitContext.Provider
       value={{
