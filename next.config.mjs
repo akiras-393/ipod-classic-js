@@ -8,7 +8,6 @@ const analyzer = withBundleAnalyzer({
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: false,
-  basePath: "/ipod",
   turbopack: {},
   allowedDevOrigins: ["127.0.0.1", "localhost"],
   compiler: {

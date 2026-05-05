@@ -76,13 +76,13 @@ export class Renderer {
 
   private loadAssets(): void {
     const recycleImg = new Image();
-    recycleImg.src = "/ipod/recycle.svg";
+    recycleImg.src = "/recycle.svg";
     recycleImg.onload = () => {
       this.recycleIcon = recycleImg;
     };
 
     const handImg = new Image();
-    handImg.src = "/ipod/hand_cursor.svg";
+    handImg.src = "/hand_cursor.svg";
     handImg.onload = () => {
       this.handCursor = handImg;
     };
@@ -95,12 +95,12 @@ export class Renderer {
     };
 
     for (const [suit, { file, color }] of Object.entries(suitFiles)) {
-      this.loadColoredSvg(`/ipod/${file}`, color, (img) => {
+      this.loadColoredSvg(`/${file}`, color, (img) => {
         this.suitImages[suit] = img;
       });
     }
 
-    this.loadColoredSvg("/ipod/apple.svg", "#FFFFFF", (img) => {
+    this.loadColoredSvg("/apple.svg", "#FFFFFF", (img) => {
       this.appleLogo = img;
     });
   }

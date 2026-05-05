@@ -7,7 +7,7 @@ const revision =
 
 export const { dynamic, dynamicParams, revalidate, generateStaticParams, GET } =
   createSerwistRoute({
-    additionalPrecacheEntries: [{ url: "/ipod/~offline", revision }],
+    additionalPrecacheEntries: [{ url: "/~offline", revision }],
     swSrc: "app/sw.ts",
     useNativeEsbuild: true,
   });
