@@ -7,10 +7,7 @@ import { ViewId, ViewProps, VIEW_REGISTRY } from "@/components/views/registry";
 /**
  * Known popup IDs used throughout the app.
  */
-export type PopupId =
-  | "spotifyNotSupported"
-  | "spotifyNonPremium"
-  | "musicProviderError";
+export type PopupId = "musicProviderError";
 
 /**
  * Known action sheet IDs used throughout the app.
@@ -19,7 +16,6 @@ export type ActionSheetId =
   | "media-action-sheet"
   | "signin-popup"
   | "device-theme-action-sheet"
-  | "service-type-action-sheet"
   | "sign-out-popup"
   | "shuffle-mode-action-sheet"
   | "repeat-mode-action-sheet"

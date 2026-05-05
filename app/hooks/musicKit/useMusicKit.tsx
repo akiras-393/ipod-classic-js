@@ -20,8 +20,7 @@ export type MusicKitHook = MusicKitState & {
 };
 
 export const useMusicKit = (): MusicKitHook => {
-  const { setIsAppleAuthorized, isSpotifyAuthorized, setService } =
-    useSettings();
+  const { setIsAppleAuthorized } = useSettings();
   const context = useContext(MusicKitContext);
   const { showPopup } = useViewContext();
 
@@ -60,21 +59,14 @@ export const useMusicKit = (): MusicKitHook => {
       if (!music.isAuthorized) {
         await music.authorize();
       }
-
-      if (music.isAuthorized) {
-        setService("apple");
-      }
     }
-  }, [hasError, setService, showPopup]);
+  }, [hasError, showPopup]);
 
   const signOut = useCallback(() => {
     const music = window.MusicKit?.getInstance();
     music?.unauthorize();
     setIsAppleAuthorized(false);
-
-    // Change to Spotify if available.
-    setService(isSpotifyAuthorized ? "spotify" : undefined);
-  }, [isSpotifyAuthorized, setIsAppleAuthorized, setService]);
+  }, [setIsAppleAuthorized]);
 
   return {
     isConfigured,

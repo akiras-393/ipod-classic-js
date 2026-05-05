@@ -1,5 +1,3 @@
-import { decode as decodeHtmlEntities } from "he";
-
 // Artwork Conversion
 
 /** Accepts a url with '{w}' and '{h}' and replaces them with the specified size */
@@ -22,30 +20,6 @@ export const convertAppleSong = (data: AppleMusicApi.Song): MediaApi.Song => ({
   trackNumber: data.attributes?.trackNumber ?? 0,
 });
 
-export const convertSpotifySongSimplified = (
-  data: SpotifyApi.TrackObjectSimplified
-): MediaApi.Song => ({
-  id: data.id,
-  name: data.name,
-  url: data.uri,
-  artistName: data.artists.map(({ name }) => name).join(", "),
-  duration: data.duration_ms,
-  trackNumber: data.track_number,
-});
-
-export const convertSpotifySongFull = (
-  data: SpotifyApi.TrackObjectFull
-): MediaApi.Song => ({
-  id: data.id,
-  name: data.name,
-  url: data.uri,
-  artwork: { url: data.album.images[0]?.url ?? "" },
-  albumName: data.album.name,
-  artistName: data.artists.map(({ name }) => name).join(", "),
-  duration: data.duration_ms,
-  trackNumber: data.track_number,
-});
-
 // Playlist Conversion
 
 export const convertApplePlaylist = (
@@ -62,32 +36,6 @@ export const convertApplePlaylist = (
   songs: data.relationships?.tracks?.data.map(convertAppleSong) ?? [],
 });
 
-export const convertSpotifyPlaylistSimplified = (
-  data: SpotifyApi.PlaylistObjectSimplified
-): MediaApi.Playlist => ({
-  id: data.id,
-  name: data.name,
-  curatorName: data.owner.display_name ?? "",
-  url: data.uri,
-  artwork: { url: data.images[0]?.url ?? "" },
-  description: data.description ? decodeHtmlEntities(data.description) : "",
-  songs: [],
-});
-
-export const convertSpotifyPlaylistFull = (
-  data: SpotifyApi.PlaylistObjectFull
-): MediaApi.Playlist => ({
-  id: data.id,
-  name: data.name,
-  curatorName: data.owner.display_name ?? "",
-  url: data.uri,
-  artwork: { url: data.images[0]?.url ?? "" },
-  description: data.description ?? "",
-  songs: data.tracks.items
-    .filter((item): item is SpotifyApi.PlaylistTrackObject & { track: SpotifyApi.TrackObjectFull } => !!item?.track)
-    .map((item) => convertSpotifySongFull(item.track)),
-});
-
 export const convertAppleAlbum = (
   data: AppleMusicApi.Album
 ): MediaApi.Album => ({
@@ -101,28 +49,6 @@ export const convertAppleAlbum = (
   songs: data.relationships?.tracks?.data?.map(convertAppleSong) ?? [],
 });
 
-export const convertSpotifyAlbumSimplified = (
-  data: SpotifyApi.AlbumObjectSimplified
-): MediaApi.Album => ({
-  id: data.id,
-  name: data.name,
-  artistName: data.artists.map((artist) => artist.name).join(", "),
-  url: data.uri,
-  artwork: { url: data.images[0]?.url ?? "" },
-  songs: [],
-});
-
-export const convertSpotifyAlbumFull = (
-  data: SpotifyApi.AlbumObjectFull
-): MediaApi.Album => ({
-  id: data.id,
-  name: data.name,
-  artistName: data.artists.map((artist) => artist.name).join(", "),
-  url: data.uri,
-  artwork: { url: data.images[0]?.url ?? "" },
-  songs: data.tracks.items.map((item) => convertSpotifySongSimplified(item)),
-});
-
 export const convertAppleArtist = (
   data: AppleMusicApi.Artist
 ): MediaApi.Artist => ({
@@ -130,26 +56,6 @@ export const convertAppleArtist = (
   name: data.attributes?.name ?? "–",
   url: data.attributes?.url ?? "",
   albums: data.relationships?.albums?.data.map(convertAppleAlbum) ?? [],
-});
-
-export const convertSpotifyArtistSimplified = (
-  data: SpotifyApi.ArtistObjectSimplified
-): MediaApi.Artist => ({
-  id: data.id,
-  name: data.name,
-  url: data.uri,
-  artwork: undefined,
-});
-
-export const convertSpotifyArtistFull = (
-  data: SpotifyApi.ArtistObjectFull
-): MediaApi.Artist => ({
-  id: data.id,
-  name: data.name,
-  url: data.uri,
-  artwork: {
-    url: data.images[0]?.url,
-  },
 });
 
 export const convertAppleMediaItem = (
@@ -165,35 +71,6 @@ export const convertAppleMediaItem = (
   name: mediaItem.title,
   trackNumber: mediaItem.trackNumber,
   url: "",
-});
-
-export const convertSpotifyMediaItem = (
-  state: Spotify.PlaybackState
-): MediaApi.MediaItem => {
-  const track = state.track_window.current_track;
-
-  return {
-    albumName: track.album.name,
-    artistName: track.artists.map(({ name }) => name).join(", "),
-    artwork: {
-      url: track.album.images[0]?.url ?? "",
-    },
-    duration: state.duration,
-    id: track.id ?? "",
-    name: track.name,
-    trackNumber: 0,
-    url: track.uri,
-  };
-};
-
-export const convertSpotifySearchResults = (
-  results: SpotifyApi.SearchResponse
-): MediaApi.SearchResults => ({
-  artists: results.artists?.items.map(convertSpotifyArtistFull) ?? [],
-  albums: results.albums?.items.map(convertSpotifyAlbumSimplified) ?? [],
-  songs: results.tracks?.items.map(convertSpotifySongFull) ?? [],
-  playlists:
-    results.playlists?.items.map(convertSpotifyPlaylistSimplified) ?? [],
 });
 
 export const convertAppleSearchResults = (

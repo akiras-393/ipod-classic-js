@@ -1,4 +1,4 @@
-import { getRootAppUrl } from "@/api/spotify/utils";
+import { getRootAppUrl } from "@/utils";
 import StyledComponentsRegistry from "@/lib/registry";
 import { SerwistProvider } from "@/lib/serwist-provider";
 import { Metadata, Viewport } from "next";
@@ -66,7 +66,6 @@ export default function RootLayout({
   return (
     <html>
       <head>
-        <link rel="preconnect" href="https://sdk.scdn.co" crossOrigin="" />
         <link rel="preconnect" href="https://js-cdn.music.apple.com" crossOrigin="" />
       </head>
       <body>

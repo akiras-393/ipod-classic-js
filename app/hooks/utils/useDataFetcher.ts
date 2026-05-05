@@ -4,7 +4,6 @@ import {
   useMKDataFetcher,
   useMusicKit,
   useSettings,
-  useSpotifyDataFetcher,
 } from "@/hooks";
 
 interface UserLibraryProps {
@@ -72,17 +71,13 @@ export interface DataFetcher {
 }
 
 const useResolvedFetcher = () => {
-  const spotifyDataFetcher = useSpotifyDataFetcher();
   const appleDataFetcher = useMKDataFetcher();
-  const { service, isAppleAuthorized, isSpotifyAuthorized } = useSettings();
+  const { isAppleAuthorized } = useSettings();
   const { isConfigured } = useMusicKit();
 
-  const enabled =
-    (service === "apple" && isAppleAuthorized && isConfigured) ||
-    (service === "spotify" && isSpotifyAuthorized);
-
-  const fetcher: DataFetcher =
-    service === "spotify" ? spotifyDataFetcher : appleDataFetcher;
+  const service = "apple" as const;
+  const enabled = isAppleAuthorized && isConfigured;
+  const fetcher: DataFetcher = appleDataFetcher;
 
   return { fetcher, service, enabled };
 };

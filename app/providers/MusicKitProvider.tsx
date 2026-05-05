@@ -14,11 +14,7 @@ export const MusicKitProvider = ({
   const [hasDevToken, setHasDevToken] = useState(false);
   const [isConfigured, setIsConfigured] = useState(false);
   const [hasError, setHasError] = useState(false);
-  const {
-    isSpotifyAuthorized,
-    setIsAppleAuthorized,
-    setService: setStreamingService,
-  } = useSettings();
+  const { setIsAppleAuthorized } = useSettings();
 
   const handleConfigure = useCallback(async () => {
     // Prevent multiple configurations
@@ -74,7 +70,6 @@ export const MusicKitProvider = ({
       setIsAppleAuthorized(true);
     } else {
       setIsAppleAuthorized(false);
-      setStreamingService(isSpotifyAuthorized ? "spotify" : undefined);
     }
   });
 

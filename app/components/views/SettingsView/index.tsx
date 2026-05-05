@@ -10,31 +10,22 @@ import {
   useMusicKit,
   useSelectableList,
   useSettings,
-  useSpotifySDK,
 } from "@/hooks";
 
 const THEMES = ["silver", "black", "u2"] as const;
-
-const SERVICE_LABELS = {
-  apple: "Apple Music",
-  spotify: "Spotify",
-} as const;
-
-const formatCurrentLabel = (label: string, isCurrent: boolean) =>
-  `${label}${isCurrent ? " (Current)" : ""}`;
 
 const getThemeLabel = (theme: (typeof THEMES)[number]) => {
   if (theme === "u2") return "U2 Edition";
   return theme.charAt(0).toUpperCase() + theme.slice(1);
 };
 
+const formatCurrentLabel = (label: string, isCurrent: boolean) =>
+  `${label}${isCurrent ? " (Current)" : ""}`;
+
 const SettingsView = () => {
   const {
     isAuthorized,
-    isAppleAuthorized,
-    isSpotifyAuthorized,
     isOffline,
-    service,
     deviceTheme,
     setDeviceTheme,
     shuffleMode,
@@ -48,8 +39,6 @@ const SettingsView = () => {
     signOut: signOutApple,
     isConfigured: isMkConfigured,
   } = useMusicKit();
-  const { signOut: signOutSpotify, signIn: signInWithSpotify } =
-    useSpotifySDK();
   const { reset } = useAudioPlayer();
 
   const createResetHandler = useCallback(
@@ -71,65 +60,6 @@ const SettingsView = () => {
     [deviceTheme, setDeviceTheme]
   );
 
-  const serviceOptions: SelectableListOption[] = useMemo(
-    () => [
-      {
-        type: "action",
-        isSelected: service === "apple",
-        label: formatCurrentLabel(SERVICE_LABELS.apple, service === "apple"),
-        onSelect: createResetHandler(signInWithApple),
-      },
-      {
-        type: "action",
-        isSelected: service === "spotify",
-        label: formatCurrentLabel(
-          SERVICE_LABELS.spotify,
-          service === "spotify"
-        ),
-        onSelect: createResetHandler(signInWithSpotify),
-      },
-    ],
-    [service, createResetHandler, signInWithApple, signInWithSpotify]
-  );
-
-  const signInOptions: SelectableListOption[] = useMemo(
-    () => [
-      ...getConditionalOption(isMkConfigured, {
-        type: "action",
-        label: SERVICE_LABELS.apple,
-        onSelect: signInWithApple,
-      }),
-      {
-        type: "action",
-        label: SERVICE_LABELS.spotify,
-        onSelect: signInWithSpotify,
-      },
-    ],
-    [isMkConfigured, signInWithApple, signInWithSpotify]
-  );
-
-  const signOutOptions: SelectableListOption[] = useMemo(
-    () => [
-      ...getConditionalOption(isAppleAuthorized, {
-        type: "action",
-        label: SERVICE_LABELS.apple,
-        onSelect: createResetHandler(signOutApple),
-      }),
-      ...getConditionalOption(isSpotifyAuthorized, {
-        type: "action",
-        label: SERVICE_LABELS.spotify,
-        onSelect: createResetHandler(signOutSpotify),
-      }),
-    ],
-    [
-      isAppleAuthorized,
-      isSpotifyAuthorized,
-      createResetHandler,
-      signOutApple,
-      signOutSpotify,
-    ]
-  );
-
   const options: SelectableListOption[] = useMemo(
     () => [
       {
@@ -138,14 +68,6 @@ const SettingsView = () => {
         viewId: "about",
         preview: SplitScreenPreview.Settings,
       },
-      /** Add an option to select between services signed into more than one. */
-      ...getConditionalOption(isAuthorized && !isOffline, {
-        type: "actionSheet",
-        id: "service-type-action-sheet",
-        label: "Choose service",
-        listOptions: serviceOptions,
-        preview: SplitScreenPreview.Service,
-      }),
       /** Add shuffle mode options */
       ...getConditionalOption(isAuthorized, {
         type: "actionSheet",
@@ -227,36 +149,33 @@ const SettingsView = () => {
         ],
         preview: SplitScreenPreview.Settings,
       },
-      /** Show the sign in option if not signed into any service. */
-      ...getConditionalOption(!isAuthorized && !isOffline, {
-        type: "actionSheet",
-        id: "signin-popup",
-        label: "Sign in",
-        listOptions: signInOptions,
-        preview: SplitScreenPreview.Music,
+      /** Show the sign in option if not signed in and Apple Music is configured. */
+      ...getConditionalOption(!isAuthorized && !isOffline && isMkConfigured, {
+        type: "action",
+        label: "Sign in to Apple Music",
+        onSelect: signInWithApple,
       }),
-      /** Show the signout option for any services that are authenticated. */
+      /** Show the sign out option if signed in. */
       ...getConditionalOption(isAuthorized && !isOffline, {
-        type: "actionSheet",
-        id: "sign-out-popup",
+        type: "action",
         label: "Sign out",
-        listOptions: signOutOptions,
-        preview: SplitScreenPreview.Service,
+        onSelect: createResetHandler(signOutApple),
       }),
     ],
     [
       isAuthorized,
       isOffline,
-      serviceOptions,
+      isMkConfigured,
       themeOptions,
-      signInOptions,
-      signOutOptions,
       shuffleMode,
       setShuffleMode,
       repeatMode,
       setRepeatMode,
       hapticsEnabled,
       setHapticsEnabled,
+      signInWithApple,
+      signOutApple,
+      createResetHandler,
     ]
   );
 
