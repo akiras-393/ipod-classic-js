@@ -40,3 +40,6 @@ yarn-error.log*
 /ios/App/App.xcodeproj/xcuserdata
 /ios/App/App/public
 /ios/DerivedData
+
+# Release secrets (App Store Connect API key 認証情報)
+/scripts/release.env
